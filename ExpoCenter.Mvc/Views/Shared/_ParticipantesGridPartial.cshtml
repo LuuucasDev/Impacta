@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ExpoCenter.Mvc.Models.ParticipanteGridViewModel>
+
+<h4>Participantes</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cpf)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var i = 0;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.CheckBox($"Participantes[{i}].Selecionado", item.Selecionado)
+                    @Html.Hidden($"Participantes[{i++}].Id", item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cpf)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

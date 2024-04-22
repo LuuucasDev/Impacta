@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Pagamentos</title>
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+</head>
+<body>
+    <input type="text" id="urlApi" placeholder="URL API Pagamentos" style="width:95%" />
+    <input type="button" onclick="loadGridData()" value="Consultar" />
+    <br />
+    <br />
+    <div id="jsGrid"></div>
+</body>
+</html>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+<script>
+    function loadGridData() {
+        $.ajaxSetup({
+            headers: {
+                "Content-Type": "application/json"
+            },
+            url: $("#urlApi").val()
+        });
+        $("#jsGrid").jsGrid("loadData");
+    }
+    $("#jsGrid").jsGrid({
+        width: "100%",
+        height: "auto",
+        inserting: true,
+        editing: true,
+        sorting: true,
+        paging: true,
+        pageSize: 20,
+        autoload: false,
+        onError: function (erro) { return alert(erro.args.join()); },
+        fields: [
+            { title: "Id", name: "id", type: "number", width: 0, visible: false },
+            { title: "Produto", name: "idProduto", type: "text", align: "center",  width: 100, validate: "required" },
+            { title: "Cartão", name: "idCartao", type: "text", align: "center", width: 100, validate: "required" },
+            { title: "Valor", name: "valor", type: "text", sorter: "number", align: "right", width: 30, validate: "required" },
+            { title: "Data", name: "data", type: "text", width: 40, validate: "required" },
+            { type: "control" }
+        ],
+        controller: {
+            loadData: function () { return getPagamentos(); },
+            insertItem: function (pagamento) { return postPagamento(pagamento); },
+            updateItem: function (pagamento) { return putPagamento(pagamento); },
+            deleteItem: function (pagamento) { return deletePagamento(pagamento); }
+        }
+    });
+    function getPagamentos() {
+        return $.ajax({
+            method: "get"
+        });
+    }
+    function postPagamento(pagamento) {
+        return $.ajax({
+            method: "POST",
+            data: JSON.stringify(pagamento)
+        });
+    }
+    function putPagamento(pagamento) {
+        return $.ajax({
+            method: "PUT",
+            url: $("#urlApi").val() + "/" + pagamento.id,
+            data: JSON.stringify(pagamento)
+        });
+    }
+    function deletePagamento(pagamento) {
+        return $.ajax({
+            method: "delete",
+            url: $("#urlApi").val() + "/" + pagamento.id
+        });
+    }
+</script>
